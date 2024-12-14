@@ -1,17 +1,40 @@
-
-
-  {
-    "version": 2,
-    "builds": [
-      {
-        "src": "./index.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "rewrites": [
-      { "source": "/api/(.*)", "destination": "/api/index.js" },
-      { "source": "/old-path", "destination": "/new-path" }
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false
-  }
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "./index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/old-path",
+      "dest": "/new-path"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*" 
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Content-Type"
+        }
+      ]
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}
