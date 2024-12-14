@@ -3,13 +3,26 @@ const mysql = require('mysql');
 
 const app = express();
 
-const cors = require('cors');
-app.use(
-    cors({
-        origin: "*",
-    })
-);
+// Custom CORS handling function
+const allowCors = fn => async (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Consider changing this for security
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
 
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  return await fn(req, res);
+};
+
+// Middleware to parse JSON requests
 app.use(express.json());
 
 // Database connection setup
@@ -27,7 +40,7 @@ app.listen(PORT, () => {
 });
 
 // Signup endpoint
-app.post('/signup', (req, res) => {
+app.post('/signup', allowCors((req, res) => {
     const generateRandomId = () => {
         return Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
     };
@@ -48,10 +61,10 @@ app.post('/signup', (req, res) => {
         }
         return res.json(data);
     });
-});
+}));
 
 // Login endpoint
-app.post('/login', (req, res) => {
+app.post('/login', allowCors((req, res) => {
     const sql = "SELECT * FROM signin WHERE `email`=? AND `password`= ?";
 
     db.query(sql, [req.body.email, req.body.password], (err, data) => {
@@ -67,10 +80,10 @@ app.post('/login', (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
     });
-});
+}));
 
 // Notes endpoints (create, get, update, delete)
-app.post('/notespost', (req, res) => {
+app.post('/notespost', allowCors((req, res) => {
     const generateRandomId = () => {
         return Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
     };
@@ -96,9 +109,9 @@ app.post('/notespost', (req, res) => {
         }
         return res.json(data);
     });
-});
+}));
 
-app.get('/notesget/:userId', (req, res) => {
+app.get('/notesget/:userId', allowCors((req, res) => {
     const userId = req.params.userId; // Get the user ID from the request parameters
     const sql = "SELECT * FROM notes WHERE user_id = ?"; // SQL query to select notes for the specific user
 
@@ -109,9 +122,9 @@ app.get('/notesget/:userId', (req, res) => {
         }
         return res.json(data); // Send the retrieved data as a JSON response
     });
-});
+}));
 
-app.put('/notes/:id', (req, res) => {
+app.put('/notes/:id', allowCors((req, res) => {
     const noteId = req.params.id; // Get the note ID from the request parameters
     const { note_title, note_content, user_id } = req.body; // Destructure the title, content, and user_id from the request body
     const date = new Date(); // Get the current date and time
@@ -134,9 +147,9 @@ app.put('/notes/:id', (req, res) => {
 
         return res.json({ message: "Note updated successfully" }); // Send success response
     });
-});
+}));
 
-app.delete('/notes/:id', (req, res) => {
+app.delete('/notes/:id', allowCors((req, res) => {
     const noteId = req.params.id; // Get the note ID from the request parameters
     const userId = req.body.user_id; // Get the user ID from the request body
 
@@ -156,4 +169,4 @@ app.delete('/notes/:id', (req, res) => {
 
         return res.json({ message: "Note deleted successfully" }); // Send success response
     });
-});
+}));
