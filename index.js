@@ -76,6 +76,13 @@ app.post('/login', (req, res) => {
 
 // Notes endpoints (create, get, update, delete)
 app.post('/notespost', (req, res) => {
+    const { note_title, note_content, user_id } = req.body;
+
+    // Validate incoming data
+    if (!note_title || !note_content || !user_id) {
+        return res.status(400).json({ message: "Bad Request: Missing required fields." });
+    }
+
     const generateRandomId = () => {
         return Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
     };
@@ -87,17 +94,17 @@ app.post('/notespost', (req, res) => {
     const sql = "INSERT INTO notes (`note_id`, `note_title`, `note_content`, `last_update`, `created_on`, `user_id`) VALUES (?, ?, ?, ?, ?, ?)";
     const values = [
         randomId,
-        req.body.note_title,
-        req.body.note_content,
+        note_title,
+        note_content,
         formattedDate,
         formattedDate,
-        req.body.user_id // Include user_id
+        user_id
     ];
 
     db.query(sql, values, (err, data) => {
         if (err) {
             console.error("Database error:", err); // Log the error for debugging
-            return res.status(500).json({ message: "Internal Server Error" });
+            return res.status(500).json({ message: "Internal Server Error", error: err.message });
         }
         return res.json(data);
     });
@@ -108,11 +115,13 @@ app.get('/notesget/:userId', (req, res) => {
     const sql = "SELECT * FROM notes WHERE user_id = ?"; // SQL query to select notes for the specific user
 
     db.query(sql, [userId], (err, data) => {
+        
         if (err) {
             console.error("Database error:", err); // Log the error for debugging
             return res.status(500).json({ message: "Internal Server Error" });
         }
-        return res.json(data); // Send the retrieved data as a JSON response
+        return res.json(data); 
+      // Send the retrieved data as a JSON response
     });
 });
 
