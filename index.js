@@ -4,14 +4,11 @@ const mysql = require('mysql');
 const app = express();
 
 const cors = require('cors');
-
-app.use(cors({
-  origin: 'https://keepnotes-frontend.vercel.app', // Replace with your exact frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Content-Type'],
-  credentials: true, // Adjust if needed for cookies/sessions
-}));
-
+app.use(
+    cors({
+        origin: "*",
+    })
+);
 
 app.use(express.json());
 
@@ -63,7 +60,7 @@ app.post('/login', (req, res) => {
             return res.status(500).json({ message: "Internal Server Error" });
         }
         if (data.length > 0) {
-            const userName = data[0].name; 
+            const userName = data[0].name;
             const userId = data[0].id; // Assuming the name is in the first row
             return res.json({ message: "success", name: userName, id: userId });
         } else {
