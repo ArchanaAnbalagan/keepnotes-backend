@@ -22,7 +22,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*" 
+          "value": "https://keepnotes-frontend.vercel.app/" 
         },
         {
           "key": "Access-Control-Allow-Methods",

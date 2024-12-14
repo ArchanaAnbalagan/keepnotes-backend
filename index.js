@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const cors = require('cors');
 const app = express();
 const corsOptions = {
-    origin: '*', // Replace with your frontend domain
+    origin: 'https://keepnotes-frontend.vercel.app', // Replace with your frontend domain
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   };
