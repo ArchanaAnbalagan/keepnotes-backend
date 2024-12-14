@@ -89,15 +89,17 @@ app.post('/notespost', (req, res) => {
 
     const randomId = generateRandomId();
     const date = new Date();
-    const formattedDate = date.toISOString();
+    
+    // Format the date for SQL
+    const formattedDate = date.toISOString().slice(0, 19).replace('T', ' '); // Format as 'YYYY-MM-DD HH:MM:SS'
 
     const sql = "INSERT INTO notes (`note_id`, `note_title`, `note_content`, `last_update`, `created_on`, `user_id`) VALUES (?, ?, ?, ?, ?, ?)";
     const values = [
         randomId,
         note_title,
         note_content,
-        formattedDate,
-        formattedDate,
+        formattedDate, // Use the formatted date for last_update
+        formattedDate, // Use the same formatted date for created_on
         user_id
     ];
 
@@ -109,7 +111,6 @@ app.post('/notespost', (req, res) => {
         return res.json(data);
     });
 });
-
 app.get('/notesget/:userId', (req, res) => {
     const userId = req.params.userId; // Get the user ID from the request parameters
     const sql = "SELECT * FROM notes WHERE user_id = ?"; // SQL query to select notes for the specific user
@@ -128,8 +129,10 @@ app.get('/notesget/:userId', (req, res) => {
 app.put('/notes/:id', (req, res) => {
     const noteId = req.params.id; // Get the note ID from the request parameters
     const { note_title, note_content, user_id } = req.body; // Destructure the title, content, and user_id from the request body
-    const date = new Date(); // Get the current date and time
-    const formattedDate = date.toISOString(); // Format the date to ISO string
+    const date = new Date();
+    
+    // Format the date for SQL
+    const formattedDate = date.toISOString().slice(0, 19).replace('T', ' '); // Format the date to ISO string
 
     // SQL query to update the note with the specified ID
     const sql = "UPDATE notes SET note_title = ?, note_content = ?, last_update = ? WHERE note_id = ? AND user_id = ?";
