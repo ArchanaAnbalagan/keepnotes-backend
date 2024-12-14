@@ -3,44 +3,34 @@ const mysql = require('mysql');
 const cors = require('cors');
 const app = express();
 
+// CORS configuration
 app.use(cors({
-    origin: 'https://keepnotes-frontend.vercel.app', // Your frontend domain
+    origin: 'https://keepnotes-frontend.vercel.app', // Specify your frontend domain
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Content-Type'],
     credentials: true,
 }));
 
+// Handle preflight requests
 app.options('*', cors());
 
-  
-  
-app.use(express.json())   
+app.use(express.json());
 
-
-
-// const db = mysql.createConnection({
-//     host: "localhost",
-//     user: "root",
-//     password: "",
-//     database: "signup"
-// })
-
-
-
-
+// Database connection setup
 const db = mysql.createConnection({
     host: "biqdq8muympwylusbr1u-mysql.services.clever-cloud.com",
     user: "uysmmt20zb9t7wzi",
     password: "n0RAkNY5Auw9Mkp9FBRB",
     database: "biqdq8muympwylusbr1u"
-})
-// process.env.PORT ||
-// ss
+});
+
+// Start the server
 const PORT = process.env.PORT || 8083;
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}...`);
 });
 
+// Signup endpoint
 app.post('/signup', (req, res) => {
     const generateRandomId = () => {
         return Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
@@ -63,35 +53,34 @@ app.post('/signup', (req, res) => {
         return res.json(data);
     });
 });
+
+// Login endpoint
 app.post('/login', (req, res) => {
-    const sql = "SELECT * FROM signin WHERE `email`=? AND `password`= ? "
+    const sql = "SELECT * FROM signin WHERE `email`=? AND `password`= ?";
 
     db.query(sql, [req.body.email, req.body.password], (err, data) => {
         if (err) {
-            return res.json("Error");
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Internal Server Error" });
         }
         if (data.length > 0) {
-            console.log(data, "body")
             const userName = data[0].name; 
-            const userid=data[0].id;// Assuming the name is in the first row
-            return res.json({ message: "success", name: userName, id: userid });
-            // return res.json("success")
+            const userId = data[0].id; // Assuming the name is in the first row
+            return res.json({ message: "success", name: userName, id: userId });
+        } else {
+            return res.status(401).json({ message: "Invalid credentials" });
         }
-        else {
-            return res.json("failed")
-        }
-    })
+    });
+});
 
-
-})
-
+// Notes endpoints (create, get, update, delete)
 app.post('/notespost', (req, res) => {
     const generateRandomId = () => {
         return Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
     };
 
     const randomId = generateRandomId();
-    const date = new Date(); // This will give you the current date and time
+    const date = new Date();
     const formattedDate = date.toISOString();
 
     const sql = "INSERT INTO notes (`note_id`, `note_title`, `note_content`, `last_update`, `created_on`, `user_id`) VALUES (?, ?, ?, ?, ?, ?)";
@@ -112,6 +101,7 @@ app.post('/notespost', (req, res) => {
         return res.json(data);
     });
 });
+
 app.get('/notesget/:userId', (req, res) => {
     const userId = req.params.userId; // Get the user ID from the request parameters
     const sql = "SELECT * FROM notes WHERE user_id = ?"; // SQL query to select notes for the specific user
@@ -123,7 +113,8 @@ app.get('/notesget/:userId', (req, res) => {
         }
         return res.json(data); // Send the retrieved data as a JSON response
     });
-});;
+});
+
 app.put('/notes/:id', (req, res) => {
     const noteId = req.params.id; // Get the note ID from the request parameters
     const { note_title, note_content, user_id } = req.body; // Destructure the title, content, and user_id from the request body
