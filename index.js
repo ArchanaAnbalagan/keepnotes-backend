@@ -2,7 +2,13 @@ const express = require("express");
 const mysql = require('mysql');
 const cors = require('cors');
 const app = express();
-app.use(cors()); // Allow all origins (for testing only)
+
+app.use(cors({
+    origin: '*', // Your frontend domain
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+}));
+
   
   
 app.use(express.json())   
