@@ -2,20 +2,11 @@ const express = require("express");
 const mysql = require('mysql');
 const cors = require('cors');
 const app = express();
-const corsOptions = {
-    origin: 'https://keepnotes-frontend.vercel.app', // Replace with your frontend domain
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  };
+app.use(cors()); // Allow all origins (for testing only)
   
   
 app.use(express.json())   
 
-// Use CORS middleware
-app.use(cors(corsOptions));
-
-// Enable pre-flight across-the-board
-app.options('*', cors(corsOptions));
 
 
 // const db = mysql.createConnection({
