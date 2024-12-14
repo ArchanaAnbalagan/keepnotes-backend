@@ -8,10 +8,14 @@ const corsOptions = {
     credentials: true,
   };
   
-  app.use(cors(corsOptions));
+  
 app.use(express.json())   
 
+// Use CORS middleware
+app.use(cors(corsOptions));
 
+// Enable pre-flight across-the-board
+app.options('*', cors(corsOptions));
 
 
 // const db = mysql.createConnection({
