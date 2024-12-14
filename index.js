@@ -4,8 +4,13 @@ const cors = require('cors'); // Import the CORS middleware
 
 const app = express();
 
-// Use the CORS middleware
-app.use(cors());
+const corsOptions = {
+    origin: '*', // Replace with your Vercel app URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  };
+  
+  app.use(cors(corsOptions));
 
 // Middleware to parse JSON requests
 app.use(express.json());
