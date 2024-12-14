@@ -24,9 +24,11 @@ const db = mysql.createConnection({
     password: "n0RAkNY5Auw9Mkp9FBRB",
     database: "biqdq8muympwylusbr1u"
 })
-app.listen(8081, () => {
-    console.log("listenning...")
-})
+const PORT = process.env.PORT || 8082;
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}...`);
+});
+
 app.post('/signup', (req, res) => {
     const generateRandomId = () => {
         return Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
