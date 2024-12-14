@@ -24,7 +24,9 @@ const db = mysql.createConnection({
     password: "n0RAkNY5Auw9Mkp9FBRB",
     database: "biqdq8muympwylusbr1u"
 })
-const PORT = process.env.PORT || 8082;
+// process.env.PORT ||
+// ss
+const PORT = process.env.PORT || 8083;
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}...`);
 });
