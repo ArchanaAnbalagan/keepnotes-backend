@@ -4,10 +4,13 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-    origin: '*', // Your frontend domain
+    origin: 'https://keepnotes-frontend.vercel.app', // Your frontend domain
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Content-Type'],
     credentials: true,
 }));
+
+app.options('*', cors());
 
   
   
