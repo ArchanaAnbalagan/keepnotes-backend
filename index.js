@@ -59,7 +59,7 @@ app.post('/login', (req, res) => {
     const values = [
         req.body.email, req.body.password
     ];
-    db.query(sql, [values], (err, data) => {
+    db.query(sql, values, (err, data) => {
         if (err) {
             console.error("Database error:", err);
             return res.status(500).json({ message: "Internal Server Error" });
