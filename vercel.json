@@ -22,7 +22,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*" // Allow all domains
+          "value": "*" 
         },
         {
           "key": "Access-Control-Allow-Methods",
