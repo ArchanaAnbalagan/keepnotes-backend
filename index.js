@@ -69,7 +69,7 @@ app.post('/login', (req, res) => {
             const userId = data[0].id; // Assuming the name is in the first row
             return res.json({ message: "success", name: userName, id: userId });
         } else {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.json({ message: "Invalid credentials" });
         }
     });
 });
