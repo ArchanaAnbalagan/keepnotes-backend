@@ -6,14 +6,14 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "src": "/old-path",
-      "dest": "/new-path"
+      "source": "/old-path",
+      "destination": "/new-path"
     }
   ],
   "headers": [
@@ -22,7 +22,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*" 
+          "value": "*" // Allow all domains
         },
         {
           "key": "Access-Control-Allow-Methods",
