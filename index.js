@@ -22,7 +22,20 @@ const db = mysql.createConnection({
     password: "n0RAkNY5Auw9Mkp9FBRB",
     database: "biqdq8muympwylusbr1u"
 });
-
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL:', err.stack);
+        return;
+    }
+    console.log('Connected to MySQL as id ' + db.threadId);
+});
+// // Database connection setup
+// const db = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "",
+//     database: "signup"
+// });
 // Start the server
 const PORT = process.env.PORT || 8083;
 app.listen(PORT, () => {
@@ -36,7 +49,7 @@ app.post('/signup', (req, res) => {
     };
 
     const randomId = generateRandomId();
-    const sql = "INSERT INTO signin (`id`,`name`, `email`, `password`) VALUES (?,?, ?, ?)";
+    const sql = "INSERT INTO signin (`id`,`name`, `email`, `password`) VALUES (?, ?, ?, ?)";
     const values = [
         randomId,
         req.body.name,
